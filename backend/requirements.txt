@@ -7,3 +7,4 @@ alembic==1.11.1
 pydantic[email]
 passlib[bcrypt]
 python-jose==3.3
+python-multipart==0.0.6
