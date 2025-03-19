@@ -14,7 +14,7 @@ pipeline {
         stage('Build Docker Image for The App'){
             steps{
                 sh """
-                    docker-compose build 
+                    docker compose build 
                 """
             }
         }
