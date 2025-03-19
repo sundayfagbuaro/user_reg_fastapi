@@ -1,0 +1,45 @@
+version: '3.9'
+
+services:
+  fastapi:
+    container_name: fastapi
+#    image: fastapi_custom:v2
+    build: .
+    depends_on:
+      - fastapi_db
+    environment:
+      - "POSTGRES_SERVER:fastapi_db"
+      - "POSTGRES_USER:appadmin"
+      - "POSTGRES_PASSWORD:Superadminuser"
+      - "POSTGRES_DB:users_db"
+    networks:
+      - fastapi_net
+    restart: always
+    ports:
+      - "8000:8000"
+#    command: ["/bin/bash", "-c", "chmod +x update_db.sh && ./update_db.sh"]
+  fastapi_db:
+    container_name: fastapi_db
+    image: postgres:15-alpine
+    volumes:
+        - postgres_data_new:/var/lib/postgresql/data/
+        - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5342:5342"
+    environment:
+      - POSTGRES_USER=appadmin
+      - POSTGRES_PASSWORD=Superadminuser
+      - POSTGRES_DB=users_db
+    networks:
+      - fastapi_net
+    restart: always
+
+networks:
+  fastapi_net:
+    external: true
+    name: fastapi_net
+
+volumes:
+  postgres_data_new:
+#    external: false
+    name: postgres_data_new
