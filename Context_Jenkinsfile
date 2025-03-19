@@ -14,7 +14,8 @@ pipeline {
         stage('Build Docker Image for The App'){
             steps{
                 sh """
-                    docker build -t ${docker_user}/fastapi_custom_img:v1 .
+                    docker context use default 
+                    docker compose build 
                 """
             }
         }
@@ -29,27 +30,17 @@ pipeline {
                     sh 'docker login -u ${docker_user} -p ${docker_pass}'
                 }
 
-                sh 'docker push ${docker_user}/fastapi_custom_img:v1'
-            }
-        }
-        stage('Copy docker-compose file to docker host'){
-            steps{
-                sh "scp -i /var/lib/jenkins/.ssh/id_rsa docker-compose.yml bobosunne@10.10.1.42:/home/bobosunne/deployment/"
+                sh 'docker compose push'
             }
         }
         stage('Deploy To Docker Host') {
-            steps{  
-                script{  
-                    sshagent(['docker-host-cred']) {
-                    sh """
-                    ssh -tt -o StrictHostKeyChecking=no bobosunne@10.10.1.42 << EOF
-                    cd deployment
+            steps{               
+                sh """
+                    docker context use docker-lab
                     docker compose up -d
                     docker compose ps
                     
                     """
-                    }           
-                }
             }
         }
     }
