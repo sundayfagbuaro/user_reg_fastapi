@@ -36,7 +36,7 @@ services:
 
 networks:
   fastapi_net:
-    external: true
+#    external: true
     name: fastapi_net
 
 volumes:
