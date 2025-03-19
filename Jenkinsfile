@@ -36,7 +36,8 @@ pipeline {
         stage('Deploy To Docker Host') {
             steps{               
                 sh """
-                    docker context use docker-lab
+                    docker context create compose_deploy --docker "host=ssh://10.10.1.42"
+                    docker context use compose_deploy
                     docker compose up -d
                     docker compose ps
                     
