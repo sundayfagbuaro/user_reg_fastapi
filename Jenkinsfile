@@ -38,7 +38,7 @@ pipeline {
                 script {
                     sshagent(['docker-host-cred']) {
                     
-                    sh """ssh-tt -o StrictHostKeyChecking=no bobosunne@10.10.1.42 << EOF
+                    sh """ssh -tt -o StrictHostKeyChecking=no bobosunne@10.10.1.42 << EOF
                         
                         docker compose up -d
                         exit
