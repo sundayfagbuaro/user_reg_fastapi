@@ -38,21 +38,18 @@ pipeline {
                 sh "scp -i /var/lib/jenkins/.ssh/id_rsa docker-compose.yml bobosunne@10.10.1.42:/home/bobosunne/deployment/"
             }
         }
+
         stage('Deploy To Docker Host') {
             steps{  
                 script{  
-                    sshagent(['docker-host-cred']) {
-                    sh """
-                    ssh -tt -o StrictHostKeyChecking=no bobosunne@10.10.1.42 << EOF
-                    cd deployment
-                    docker login -u ${docker_user} -p ${docker_pass}
-                    docker compose up -d
-                    docker compose ps
-                    
+                   sh """
+                    docker context user docker-lab
+                    docker compose up           
                     """
-                    }           
+                        }        
+                }           
+
                 }
             }
         }
-    }
-}
+
