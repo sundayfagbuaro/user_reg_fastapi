@@ -42,14 +42,18 @@ pipeline {
         stage('Deploy To Docker Host') {
             steps{  
                 script{  
-                   sh """
-                    docker context use docker-lab
-                    docker compose up           
-                    """
-                        }        
-                }           
+                    sshagent(['docker-host-cred']) {
+                        sh """ssh -tt -o StrictHostKeyChecking=no bobosunne@10.10.1.42 << EOF
 
-                }
-            }
+                        docker login -u sundayfagbuaro -p $docker_pass
+                        docker compose up -d 
+                        docker compose ps
+                        """
+                    }
+                   
+                }        
+            }           
         }
+    }
+}
 
