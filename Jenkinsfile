@@ -39,6 +39,11 @@ pipeline {
                     sshagent(['docker-host-cred']) {
                     
                     sh """ssh -tt -o StrictHostKeyChecking=no bobosunne@10.10.1.42 << EOF
+
+                        mkdir ~/deployment && cd ~/deployment
+                        git clone -b docker_compose https://github.com/sundayfagbuaro/user_reg_fastapi.git
+
+                        cd user_reg_fastapi
                         
                         docker compose up -d
                         exit
