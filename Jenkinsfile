@@ -14,7 +14,8 @@ pipeline {
         stage('Build Docker Image for The App'){
             steps{
                 sh """
-                    docker build -t ${docker_user}/fastapi_custom_img:v1 .
+                    docker build -t fastapi_custom_img .
+                    docker tag fastapi_custom_img sundayfagbuaro/fastapi_custom_img:v1
                 """
             }
         }
@@ -29,7 +30,7 @@ pipeline {
                     sh 'docker login -u ${docker_user} -p ${docker_pass}'
                 }
 
-                sh 'docker push ${docker_user}/fastapi_custom_img:v1'
+                sh 'docker push sundayfagbuaro/fastapi_custom_img:v1'
             }
         }
         stage('Copy docker-compose file to docker host'){
