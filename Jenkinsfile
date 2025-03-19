@@ -36,7 +36,7 @@ pipeline {
         stage('Deploy To Docker Host') {
             steps{               
                 sh """
-                    docker --context=docker-lab compose ${actions}
+                    docker --context=docker-lab compose up -d
                     docker --context=docker-lab  compose ps
                     
                     """
