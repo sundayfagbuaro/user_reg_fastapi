@@ -15,6 +15,42 @@ pipeline {
                 sh "scp -i /var/lib/jenkins/.ssh/id_rsa docker-compose.yml bobosunne@10.10.1.42:/home/bobosunne/deployment/"
             }
         }
+        stage('Build docker image for fastapi'){
+            steps{
+                sh """
+                    docker build -t fastapi_custom_img .
+                    docker tag fastapi_custom_img sundayfagbuaro/fastapi_custom_img:v1
+                """
+            }
+        }
+        stage('Push Docker Image To DockerHub') {
+            steps{
+                withCredentials([usernamePassword(
+                    credentialsId: 'docker-hub-cred', 
+                    passwordVariable: 'docker_pass', 
+                    usernameVariable: 'docker_user')]) {
+                    
+                sh 'docker login -u ${docker_user} -p ${docker_pass}'
+                }
+
+                sh 'docker push sundayfagbuaro/fastapi_custom_img:v1'
+            }
+        }
+        stage('Deploy To Docker Host') {
+            steps{  
+                script{  
+                    sshagent(['bobosunne-jenkins-dl']) {
+                        sh """ssh -tt -o StrictHostKeyChecking=no bobosunne@10.10.1.42 << EOF
+                        cd deployment
+                        docker compose up -d 
+                        docker compose ps
+                        EOF
+                        """
+                    }
+                   
+                }        
+            }           
+        }
     }
 }
 

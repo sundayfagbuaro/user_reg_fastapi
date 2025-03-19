@@ -3,7 +3,7 @@ version: '3.9'
 services:
   fastapi:
     container_name: fastapi
-    image: fastapi_custom_img:v1
+    image: sundayfagbuaro/fastapi_custom_img:v1
 #    build: .
     depends_on:
       - fastapi_db
