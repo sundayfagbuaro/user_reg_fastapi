@@ -48,6 +48,7 @@ pipeline {
                         docker login -u sundayfagbuaro -p $docker_pass
                         docker compose up -d 
                         docker compose ps
+                        EOF
                         """
                     }
                    
@@ -56,4 +57,5 @@ pipeline {
         }
     }
 }
+
 
