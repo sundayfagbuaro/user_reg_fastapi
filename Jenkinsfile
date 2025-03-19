@@ -45,6 +45,7 @@ pipeline {
                     sh """
                     ssh -tt -o StrictHostKeyChecking=no bobosunne@10.10.1.42 << EOF
                     cd deployment
+                    docker login -u ${docker_user} -p ${docker_pass}
                     docker compose up -d
                     docker compose ps
                     
