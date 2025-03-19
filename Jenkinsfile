@@ -14,6 +14,7 @@ pipeline {
         stage('Build Docker Image for The App'){
             steps{
                 sh """
+                    docker context use default 
                     docker compose build 
                 """
             }
@@ -33,25 +34,12 @@ pipeline {
             }
         }
         stage('Deploy To Docker Host') {
-            steps{
-                echo "Deploying App to docker Host"
-                script {
-                    sshagent(['docker-host-cred']) {
+            steps{               
+                sh """
+                    docker --context=docker-lab compose ${actions}
+                    docker --context=docker-lab  compose ps
                     
-                    sh """ssh -tt -o StrictHostKeyChecking=no bobosunne@10.10.1.42 << EOF
-
-                        mkdir ~/deployment && cd ~/deployment
-                        git clone -b docker_compose https://github.com/sundayfagbuaro/user_reg_fastapi.git
-
-                        cd user_reg_fastapi
-                        
-                        docker compose up -d
-                        exit
-
-                        EOF"""
-                    }
-                }
-                
+                    """
             }
         }
     }
