@@ -43,7 +43,7 @@ pipeline {
             steps{  
                 script{  
                    sh """
-                    docker context user docker-lab
+                    docker context use docker-lab
                     docker compose up           
                     """
                         }        
