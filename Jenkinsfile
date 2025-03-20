@@ -10,11 +10,6 @@ pipeline {
                 }
             }
         }
-        stage('Copy docker-compose file to docker host'){
-            steps{
-                sh "scp -i /var/lib/jenkins/.ssh/id_rsa docker-compose.yml bobosunne@10.10.1.42:/home/bobosunne/deployment/"
-            }
-        }
         stage('Build docker image for fastapi'){
             steps{
                 sh """
@@ -36,6 +31,11 @@ pipeline {
                 sh 'docker push sundayfagbuaro/fastapi_custom_img:v1'
             }
         }
+        stage('Copy docker-compose file to docker host'){
+            steps{
+                sh "scp -i /var/lib/jenkins/.ssh/id_rsa docker-compose.yml bobosunne@10.10.1.42:/home/bobosunne/deployment/"
+            }
+        }
         stage('Deploy To Docker Host') {
             steps{  
                 script{  
@@ -45,6 +45,7 @@ pipeline {
                             cd deployment
                             docker compose up -d 
                             docker compose ps
+                            exit
                             EOF
                         """
                     }
