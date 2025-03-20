@@ -40,11 +40,12 @@ pipeline {
             steps{  
                 script{  
                     sshagent(['bobosunne-jenkins-dl']) {
-                        sh """ssh -tt -o StrictHostKeyChecking=no bobosunne@10.10.1.42 << EOF
-                        cd deployment
-                        docker compose up -d 
-                        docker compose ps
-                        EOF
+                        sh """
+                            ssh -tt -o StrictHostKeyChecking=no bobosunne@10.10.1.42 << EOF
+                            cd deployment
+                            docker compose up -d 
+                            docker compose ps
+                            EOF
                         """
                     }
                    
