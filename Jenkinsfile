@@ -33,7 +33,7 @@ pipeline {
         }
         stage('Copy docker-compose file to docker host'){
             steps{
-                sh "scp -i /var/lib/jenkins/.ssh/id_rsa docker-compose.yml bobosunne@10.10.1.42:/home/bobosunne/deployment/"
+                sh "scp -i /var/lib/jenkins/.ssh/id_rsa docker-compose.yml bobosunne@10.10.1.42:/home/bobosunne/deployment/user_reg_fastapi/"
             }
         }
         stage('Deploy To Docker Host') {
@@ -42,8 +42,8 @@ pipeline {
                     sshagent(['bobosunne-jenkins-dl']) {
                         sh """
                             ssh -tt -o StrictHostKeyChecking=no bobosunne@10.10.1.42 << EOF
-                            cd deployment
-                            docker compose ${action} 
+                            cd deployment/user_reg_fastapi
+                            docker compose ${action} -d
                             docker compose ps
                             exit
                             EOF
