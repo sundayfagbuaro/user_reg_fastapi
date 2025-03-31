@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fastapi-db
+spec:
+  selector:
+    matchLabels:
+      app: fastapi-db
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: fastapi-db
+    spec:
+      containers:
+      - image: postgres:15-alpine
+        name: fastapi-db
+        env:
+        - name: POSTGRES_USER
+          value: appadmin
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: ps-db-secret
+              key: password
+        - name: POSTGRES_DB
+          value: users_db
+        ports:
+        - containerPort: 5432
+          name: fastapi-db
+        volumeMounts:
+        - name: ps-db-pv-storage
+          mountPath: /var/lib/postgresql/data/
+        - name: initdb
+          mountPath: /docker-entrypoint-initdb.d
+      volumes:
+      - name: ps-db-pv-storage
+        persistentVolumeClaim:
+          claimName: ps-db-pvc
+      - name: initdb
+        configMap:
+          name: initdb-config
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fastapi-db
+spec:
+  ports:
+  - port: 5432
+  selector:
+    app: fastapi-db
