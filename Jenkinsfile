@@ -14,7 +14,7 @@ pipeline {
             steps{
                 sh """
                     docker build -t fastapi_custom_img .
-                    docker tag fastapi_custom_img sundayfagbuaro/fastapi_custom_img:v1
+                    docker tag fastapi_custom_img sundayfagbuaro/fastapi_custom_img:v2
                 """
             }
         }
@@ -28,7 +28,7 @@ pipeline {
                 sh 'docker login -u ${docker_user} -p ${docker_pass}'
                 }
 
-                sh 'docker push sundayfagbuaro/fastapi_custom_img:v1'
+                sh 'docker push sundayfagbuaro/fastapi_custom_img:v2'
             }
         }
         stage('Deploy the pods') {
@@ -38,6 +38,7 @@ pipeline {
                     withKubeCredentials(kubectlCredentials: [[caCertificate: '', clusterName: '', contextName: '', credentialsId: 'k8s-credentials', namespace: 'default', serverUrl: 'https://192.168.1.94:6443']]) {
                         sh 'kubectl apply -f deployment_files/postgres/config_secret_storage.yml'
                         sh 'kubectl apply -f deployment_files/postgres/svc_deployment.yml'
+                        sh 'kubectl apply -f deployment_files/fastapi/svc_deployment.yml'
                     }
                 }
 

@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fastapi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fastapi
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+#    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: fastapi
+    spec:
+      containers:
+      - image: sundayfagbuaro/k8s-test-img:v2
+        name: fastapi
+        env:
+        - name: POSTGRES_SERVER
+          value: fastapi-db
+        - name: POSTGRES_USER
+          value: appadmin
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: ps-db-secret
+              key: password
+        - name: POSTGRES_DB
+          value: users_db
+        ports:
+        - containerPort: 8000
+          name: fastapi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fastapi-svc
+spec:
+  ports:
+  - port: 8000
+  selector:
+    app: fastapi
+  type: 
+     NodePort
+
