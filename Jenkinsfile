@@ -13,8 +13,8 @@ pipeline {
         stage('Build docker image for fastapi'){
             steps{
                 sh """
-                    docker build -t fastapi_custom_img .
-                    docker tag fastapi_custom_img sundayfagbuaro/fastapi_custom_img:v2
+                    docker build -t fastapi_new_test_img .
+                    docker tag fastapi_new_test_img sundayfagbuaro/fastapi_new_test_img:v1
                 """
             }
         }
@@ -28,7 +28,7 @@ pipeline {
                 sh 'docker login -u ${docker_user} -p ${docker_pass}'
                 }
 
-                sh 'docker push sundayfagbuaro/fastapi_custom_img:v2'
+                sh 'docker push sundayfagbuaro/fastapi_new_test_img:v1'
             }
         }
         stage('Deploy the pods') {

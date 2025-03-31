@@ -19,7 +19,7 @@ spec:
         app: fastapi
     spec:
       containers:
-      - image: sundayfagbuaro/k8s-test-img:v2
+      - image: sundayfagbuaro/fastapi_new_test_img
         name: fastapi
         env:
         - name: POSTGRES_SERVER
