@@ -37,6 +37,7 @@ pipeline {
                 script{
                     withKubeCredentials(kubectlCredentials: [[caCertificate: '', clusterName: '', contextName: '', credentialsId: 'k8s-credentials', namespace: 'default', serverUrl: 'https://192.168.1.94:6443']]) {
                         sh 'kubectl apply -f deployment_files/postgres/config_secret_storage.yml'
+                        sh 'kubectl apply -f deployment_files/postgres/svc_deployment.yml'
                     }
                 }
 
